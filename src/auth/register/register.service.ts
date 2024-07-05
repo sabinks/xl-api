@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRegisterDto } from './dto/create-register.dto';
-import { UpdateRegisterDto } from './dto/update-register.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class RegisterService {
-  create(createRegisterDto: CreateRegisterDto) {
-    return 'This action adds a new register';
-  }
+    constructor(private prisma: PrismaService) { }
 
-  findAll() {
-    return `This action returns all register`;
-  }
+    async create({ username, displayName, email, password }: CreateRegisterDto) {
+        const hashPassword = await bcrypt.hash(password, 12);
+        let data = await this.prisma.user.create({
+            data: {
+                username, displayName, email, password: hashPassword, active: false,
+            }
+        })
+        const { password: hidePassword, ...user } = data
+        return user
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} register`;
-  }
-
-  update(id: number, updateRegisterDto: UpdateRegisterDto) {
-    return `This action updates a #${id} register`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} register`;
-  }
 }

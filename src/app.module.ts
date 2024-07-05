@@ -8,9 +8,14 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { RoleModule } from './role/role.module';
+import { ConfigModule } from '@nestjs/config';
+import { SeedingModule } from './database/seeding/seeding.module';
 
 @Module({
-    imports: [CatModule, LoginModule, RegisterModule, PrismaModule, UserModule, PostModule, RoleModule],
+    imports: [
+        ConfigModule.forRoot({
+            envFilePath: ['.env'],
+        }), CatModule, LoginModule, RegisterModule, PrismaModule, UserModule, PostModule, RoleModule, SeedingModule],
     controllers: [AppController],
     providers: [AppService],
 })

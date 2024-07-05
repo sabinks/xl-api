@@ -15,9 +15,12 @@ datasource db {
 
 model User {
     id          Int          @id @default(autoincrement())
-    username    String       @unique
-    displayName String?      @default("")
+    username    String       @default("")
+    displayName String       @default("")
+    email       String       @unique
     userSetting UserSetting?
+    password    String
+    active      Boolean      @default(false)
     posts       Post[]
     userRole    UserRole[]
 }

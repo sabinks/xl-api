@@ -8,23 +8,33 @@ export class UserService {
     constructor(private prisma: PrismaService) { }
 
     async create(roleName: string, data: CreateUserDto) {
-        let role = this.prisma.role.findFirst({ where: { name: roleName } })
-        let user = await this.prisma.user.create({
-            data: {
-                username: data.username, displayName: data.displayName,
-                userSetting: {
-                    create: {
-                        smsEnabled: true,
-                        notificationOn: false
-                    }
-                },
-                userRole: {
-                    create: {
-                        roleId: (await role).id
+        try {
+            let role = this.prisma.role.findFirst({ where: { name: roleName } })
+            let user = this.prisma.user.findFirst({ where: { username: data.username } })
+            if (user) {
+                throw new HttpException('Duplicate user exists', 400)
+            }
+            await this.prisma.user.create({
+                data: {
+                    username: data.username, displayName: data.displayName, email: data.email, password: data.password,
+                    userSetting: {
+                        create: {
+                            smsEnabled: true,
+                            notificationOn: false
+                        }
+                    },
+                    userRole: {
+                        create: {
+                            roleId: (await role).id
+                        }
                     }
                 }
-            }
-        })
+            })
+        } catch (error) {
+            console.log(error);
+
+            throw new Error()
+        }
     }
 
     async findAll() {
@@ -52,9 +62,9 @@ export class UserService {
         return { ...user, id: user.id.toString() }
     }
 
-    async findByUsername(username: string) {
+    async findByEmail(email: string) {
         let user = await this.prisma.user.findUnique({
-            where: { username }
+            where: { email }
         });
         return { ...user, id: user.id.toString() }
     }

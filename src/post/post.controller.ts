@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -10,11 +10,15 @@ export class PostController {
     @Post()
     @UsePipes(ValidationPipe)
     create(@Body() { userId, ...createPostDto }: CreatePostDto) {
-        return this.postService.create(userId, createPostDto);
+        try {
+            return this.postService.create(userId, createPostDto);
+        } catch (error) {
+            throw new Error()
+        }
     }
 
     @Get()
-    findAll() {
+    findAll(@Query('page') page: number) {
         return this.postService.findAll();
     }
 

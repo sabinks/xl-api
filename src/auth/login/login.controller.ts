@@ -1,14 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Req, Res } from '@nestjs/common';
-import { LoginService } from './login.service';
-import { CreateLoginDto } from './dto/create-login.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Req, Res, UseGuards, Request } from '@nestjs/common';
+import { LocalGuard } from '../guards/local.guard';
+import { JwtAuthGuard } from '../guards/jwt.guard';
 
-@Controller('login')
+@Controller('auth')
 export class LoginController {
-    constructor(private readonly loginService: LoginService) { }
+    constructor() { }
 
-    @Post()
-    @UsePipes(ValidationPipe)
-    create(@Body() createLoginDto: CreateLoginDto, @Req() req: Request, @Res() res: Response) {
-        return this.loginService.create(createLoginDto);
+    @Post('login')
+    @UseGuards(LocalGuard)
+    async login(@Request() req) {
+        return req.user;
     }
+
+    @Get('status')
+    @UseGuards(JwtAuthGuard)
+    status(@Request() req) {
+        console.log('Inside auth status method');
+        console.log(req.user);
+    }
+
 }
