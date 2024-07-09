@@ -14,15 +14,25 @@ datasource db {
 }
 
 model User {
-    id          Int          @id @default(autoincrement())
-    username    String       @default("")
-    displayName String       @default("")
-    email       String       @unique
-    userSetting UserSetting?
-    password    String
-    active      Boolean      @default(false)
-    posts       Post[]
-    userRole    UserRole[]
+    id                Int          @id @default(autoincrement())
+    username          String       @default("")
+    displayName       String       @default("")
+    email             String       @unique
+    dob               String       @default("")
+    phone             String       @default("")
+    emailVerifiedAt   String       @default("")
+    verificationToken String       @default("")
+    profileImage      String       @default("")
+    profileImagePath  String       @default("")
+    selfSignup        Boolean      @default(false)
+    data              String       @db.LongText
+    userSetting       UserSetting?
+    password          String
+    active            Boolean      @default(false)
+    posts             Post[]
+    userRole          UserRole[]
+    createdAt         String       @default("")
+    updatedAt         String       @default("")
 }
 
 model Role {
@@ -55,4 +65,35 @@ model Post {
     publish     Boolean @default(false)
     user        User    @relation(fields: [userId], references: [id])
     userId      Int
+}
+
+model BookAppointment {
+    id              Int    @id @default(autoincrement())
+    userId          Int
+    name            String @default("")
+    email           String @default("")
+    phone           String @default("")
+    dob             String @default("")
+    bookingDateTime String @default("")
+    description     String @default("")
+    status          String @default("Tentative")
+    createdAt       String @default("")
+    updatedAt       String @default("")
+}
+
+model ClientNote {
+    id        Int    @id @default(autoincrement())
+    userId    Int
+    name      String @default("")
+    note      String @db.LongText
+    createdAt String @default("")
+    updatedAt String @default("")
+}
+
+model Newsletter {
+    id        Int    @id @default(autoincrement())
+    name      String
+    content   String @db.LongText
+    createdAt String @default("")
+    updatedAt String @default("")
 }

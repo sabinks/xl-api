@@ -14,7 +14,15 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         if (!user) {
             throw new UnauthorizedException()
         }
-        return await this.loginService.generateJwt(user)
+        let accessToken = await this.loginService.generateJwt(user)
+        return {
+            access_token: accessToken,
+            role: "superadmin",
+            email: user.email,
+            name: user.displayName,
+            token_type: 'Bearer',
+            user_id: user.id,
+            expires_in: '',
+        }
     }
-
 }

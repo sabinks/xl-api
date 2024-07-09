@@ -12,6 +12,7 @@ export class RegisterService {
         let data = await this.prisma.user.create({
             data: {
                 username, displayName, email, password: hashPassword, active: false,
+                data: JSON.stringify({})
             }
         })
         const { password: hidePassword, ...user } = data

@@ -25,7 +25,8 @@ async function main() {
                 create: {
                     roleId: (await role).id
                 }
-            }
+            },
+            data: JSON.stringify({})
         }
     })
 

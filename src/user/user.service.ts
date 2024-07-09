@@ -23,6 +23,7 @@ export class UserService {
                             notificationOn: false
                         }
                     },
+                    data: JSON.stringify({}),
                     userRole: {
                         create: {
                             roleId: (await role).id

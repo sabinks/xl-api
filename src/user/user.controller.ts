@@ -1,7 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/enum/role.enum';
+import { RolesGuard } from 'src/auth/guards/role.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -14,6 +18,8 @@ export class UserController {
     }
 
     @Get()
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles('superadmin')
     findAll() {
         return this.userService.findAll();
     }
