@@ -14,25 +14,26 @@ datasource db {
 }
 
 model User {
-    id                Int          @id @default(autoincrement())
-    username          String       @default("")
-    displayName       String       @default("")
-    email             String       @unique
-    dob               String       @default("")
-    phone             String       @default("")
-    emailVerifiedAt   String       @default("")
-    verificationToken String       @default("")
-    profileImage      String       @default("")
-    profileImagePath  String       @default("")
-    selfSignup        Boolean      @default(false)
-    data              String       @db.LongText
+    id                Int            @id @default(autoincrement())
+    username          String         @default("")
+    displayName       String         @default("")
+    email             String         @unique
+    dob               String         @default("")
+    phone             String         @default("")
+    emailVerifiedAt   String         @default("")
+    verificationToken String         @default("")
+    profileImage      String         @default("")
+    profileImagePath  String         @default("")
+    selfSignup        Boolean        @default(false)
+    data              String         @db.LongText
     userSetting       UserSetting?
+    resetPassword     ResetPassword?
     password          String
-    active            Boolean      @default(false)
+    active            Boolean        @default(false)
     posts             Post[]
     userRole          UserRole[]
-    createdAt         String       @default("")
-    updatedAt         String       @default("")
+    createdAt         String         @default("")
+    updatedAt         String         @default("")
 }
 
 model Role {
@@ -96,4 +97,12 @@ model Newsletter {
     content   String @db.LongText
     createdAt String @default("")
     updatedAt String @default("")
+}
+
+model ResetPassword {
+    id        Int     @id @default(autoincrement())
+    userId    Int     @unique
+    token     String  @default("")
+    user      User    @relation(fields: [userId], references: [id])
+    tokenUsed Boolean @default(false)
 }
