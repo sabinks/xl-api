@@ -53,6 +53,34 @@ export class MailService {
         }).catch(error => console.log(error)
         )
     }
+    async sendMailToClientBookAppoiontmentConfirmed(data: any) {
+        const { appName, bookingDateTime, clientEmail, clientName } = data
+        await this.mailerService.sendMail({
+            to: clientEmail,
+            from: process.env.NO_REPLY,
+            // from: '"Support Team" <support@example.com>', // override default from
+            subject: 'Appointment Book Confirmed',
+            template: './client/book-appointment-confirmed', // `.hbs` extension is appended automatically
+            context: { // ✏️ filling curly brackets with content
+                appName, bookingDateTime, clientName
+            },
+        }).catch(error => console.log(error)
+        )
+    }
+    async sendMailToClientBookAppoiontmentCanceled(data: any) {
+        const { appName, bookingDateTime, clientEmail, clientName } = data
+        await this.mailerService.sendMail({
+            to: clientEmail,
+            from: process.env.NO_REPLY,
+            // from: '"Support Team" <support@example.com>', // override default from
+            subject: 'Appointment Booked Canceled',
+            template: './client/book-appointment-canceled', // `.hbs` extension is appended automatically
+            context: { // ✏️ filling curly brackets with content
+                appName, bookingDateTime, clientName
+            },
+        }).catch(error => console.log(error)
+        )
+    }
     async sendMailToAdminBookAppoiontmentCreated(data: any) {
         const { name, email, phone, dob, bookingDateTime, description, adminEmail, appName, adminName } = data
         await this.mailerService.sendMail({

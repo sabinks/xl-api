@@ -5,12 +5,15 @@ import { PaginateFunction, paginator } from 'src/pagination/paginator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { UpdateStatusBookAppointmentDto } from './dto/update-status-book-appointment.dto';
+import { MailService } from 'src/mail/mail.service';
 
 const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class BookAppointmentsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService,
+        private mailService: MailService,
+    ) { }
 
     create(createBookAppointmentDto: CreateBookAppointmentDto) {
     }
@@ -65,8 +68,18 @@ export class BookAppointmentsService {
             data: {
                 status: status
             }
-
         })
+        const data = {
+            clientName: bookAppointment.name,
+            clientEmail: bookAppointment.email,
+            appName: process.env.APP_NAME,
+            bookingDateTime: bookAppointment.bookingDateTime
+        }
+        if (status == 'Confirmed') {
+            this.mailService.sendMailToClientBookAppoiontmentConfirmed(data)
+        } else {
+            this.mailService.sendMailToClientBookAppoiontmentCanceled(data)
+        }
 
         return bookAppointment
     }

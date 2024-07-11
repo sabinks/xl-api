@@ -40,13 +40,24 @@
 
 <body>
     <div class="container">
-        <h2>Contact Form Submission</h2>
-        <p><strong>Name:</strong> {{name}}</p>
-        <p><strong>Email:</strong> {{email}}</p>
-        <p><strong>Phone:</strong> {{phone}}</p>
-        <p><strong>Subject:</strong> {{subject}}</p>
-        <p><strong>Message:</strong></p>
-        <p>{{message}}</p>
+        <p> Dear {{ clientName }},</p>
+
+        <p>We regret to inform you that your appointment scheduled for {{ bookingDateTime }} has been cancelled.</p>
+
+        <p> Appointment Details:</p>
+        <p> Appointment Date Time: {{ bookingDateTime}} </p>
+        <p> Appointment Status: <strong>Canceled</strong></p>
+
+        <p>We apologize for any inconvenience this may cause.</p>
+
+        <p> If you would like to reschedule your appointment or if you have any questions, please don't hesitate to
+            contact us.</p>
+
+        <p>Thank you for your understanding.</p>
+
+        <small>Warm regards,</small><br>
+        {{ appName }}
+
         <div class="footer">
             <p>This is an automated message. Please do not reply.</p>
         </div>
