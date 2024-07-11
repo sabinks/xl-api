@@ -53,7 +53,6 @@ export class BookAppointmentsService {
             }
 
         })
-        console.log(bookAppointment);
         return bookAppointment
 
     }
@@ -68,7 +67,6 @@ export class BookAppointmentsService {
             }
 
         })
-        console.log(bookAppointment);
 
         return bookAppointment
     }

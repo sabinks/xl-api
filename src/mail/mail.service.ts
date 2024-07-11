@@ -8,7 +8,6 @@ export class MailService {
     constructor(private mailerService: MailerService) { }
 
     async contactFormSendAdmin(data: CreateContactFormSendMailDto) {
-        console.log(data);
 
         const { email, name, phone, subject, message } = data
         await this.mailerService.sendMail({
@@ -38,6 +37,35 @@ export class MailService {
         }).catch(error => console.log(error)
         )
 
+    }
+
+    async sendMailToClientBookAppoiontmentCreated(data: any) {
+        const { adminName, appName, bookingDateTime, adminEmail, clientName } = data
+        await this.mailerService.sendMail({
+            to: adminEmail,
+            from: process.env.NO_REPLY,
+            // from: '"Support Team" <support@example.com>', // override default from
+            subject: 'Appointment Booked',
+            template: './client/book-appointment-created', // `.hbs` extension is appended automatically
+            context: { // ✏️ filling curly brackets with content
+                appName, bookingDateTime, clientName
+            },
+        }).catch(error => console.log(error)
+        )
+    }
+    async sendMailToAdminBookAppoiontmentCreated(data: any) {
+        const { name, email, phone, dob, bookingDateTime, description, adminEmail, appName, adminName } = data
+        await this.mailerService.sendMail({
+            to: adminEmail,
+            from: process.env.NO_REPLY,
+            // from: '"Support Team" <support@example.com>', // override default from
+            subject: 'Client Booked For Appointment',
+            template: './admin/book-appointment-created', // `.hbs` extension is appended automatically
+            context: { // ✏️ filling curly brackets with content
+                name, email, phone, dob, bookingDateTime, description, appName, adminName,
+            },
+        }).catch(error => console.log(error)
+        )
     }
     // async sendUserConfirmation(user: User, token: string) {
     //     const url = `example.com/auth/confirm?token=${token}`;

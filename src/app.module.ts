@@ -20,7 +20,6 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { MailService } from './mail/mail.service';
 import { ContactFormSendMailService } from './next/contact-form-send-mail/contact-form-send-mail.service';
-import { VerificationModule } from './auth/verification/verification.module';
 import { ForgotPasswordModule } from './auth/forgot-password/forgot-password.module';
 import { ResetPasswordModule } from './auth/reset-password/reset-password.module';
 
@@ -62,7 +61,6 @@ import { ResetPasswordModule } from './auth/reset-password/reset-password.module
         }),
         MailModule,
         ContactFormSendMailModule,
-        VerificationModule,
         ForgotPasswordModule,
         ResetPasswordModule,
     ],

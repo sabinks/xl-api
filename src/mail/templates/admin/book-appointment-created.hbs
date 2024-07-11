@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Dear {{adminName}},</h1>
+
+        <p>I hope this email finds you well. I wanted to inform you that client have booked an appointment. Please have
+            a
+            look.</p>
+
+        <p>Here are the details:</p>
+        <p> Client Name: {{ name }}</p>
+        <p>Email: {{ email }}</p>
+        <p>Phone: {{ phone}}</p>
+        <p>Date of Birth: {{ dob }}</p>
+        <p>Appointment Date Time: {{ bookingDateTime}}</p>
+        <p>Description: {{ description }}</p>
+
+        <p>Please ensure that the necessary arrangements are made to accommodate this appointment.</p>
+
+        <p>Thank you for your attention to this matter.</p>
+
+        Warm regards,<br>
+        {{ appName }}
+
+        <div class="footer">
+            <p>This is an automated message. Please do not reply.</p>
+        </div>
+    </div>
+</body>
+
+</html>

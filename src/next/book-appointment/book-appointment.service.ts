@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { MailService } from 'src/mail/mail.service';
+import { format } from 'date-fns';
 
 @Injectable()
 export class BookAppointmentService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService,
+        private mailService: MailService
+    ) { }
 
     async create(createBookAppointmentDto: CreateBookAppointmentDto) {
         const { name, email, phone, dob, bookingDate, bookingTime, description } = createBookAppointmentDto
@@ -14,9 +18,10 @@ export class BookAppointmentService {
                 email: email
             }
         })
+        let bookAppointment
         if (userExists) {
             let userId = userExists.id
-            await this.prisma.bookAppointment.create({
+            bookAppointment = await this.prisma.bookAppointment.create({
                 data: {
                     userId,
                     name, email, phone, dob, bookingDateTime: bookingDate + " " + bookingTime, description,
@@ -37,7 +42,7 @@ export class BookAppointmentService {
                     updatedAt: this.makeDate(),
                 }
             })
-            await this.prisma.bookAppointment.create({
+            bookAppointment = await this.prisma.bookAppointment.create({
                 data: {
                     userId: data.id,
                     name, email, phone, dob, bookingDateTime: bookingDate + " " + bookingTime, description,
@@ -45,6 +50,21 @@ export class BookAppointmentService {
                     createdAt: this.makeDate(),
                     updatedAt: this.makeDate(),
                 }
+            })
+        }
+        if (bookAppointment) {
+            await this.mailService.sendMailToAdminBookAppoiontmentCreated({
+                name, email, phone, dob, bookingDateTime: bookingDate + " " + bookingTime, description,
+                adminName: process.env.ADMIN_NAME,
+                adminEmail: process.env.ADMIN_EMAIL,
+                appName: process.env.APP_NAME
+            })
+            await this.mailService.sendMailToClientBookAppoiontmentCreated({
+                adminName: process.env.ADMIN_NAME,
+                adminEmail: process.env.ADMIN_EMAIL,
+                bookingDateTime: bookAppointment.bookingDateTime,
+                clientName: name,
+                appName: process.env.APP_NAME
             })
         }
     }

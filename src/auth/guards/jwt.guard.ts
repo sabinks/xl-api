@@ -6,7 +6,6 @@ import { Observable } from "rxjs";
 export class JwtAuthGuard extends AuthGuard('jwt') {
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         console.log('Inside JWT Guard');
-        console.log(context.switchToHttp().getRequest());
         return super.canActivate(context)
     }
 }
