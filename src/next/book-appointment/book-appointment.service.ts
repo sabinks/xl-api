@@ -4,11 +4,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import { format } from 'date-fns';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { log } from 'handlebars';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class BookAppointmentService {
     constructor(private prisma: PrismaService,
-        private mailService: MailService
+        private mailService: MailService,
+        private eventEmitter: EventEmitter2,
+        @InjectQueue('fileUpload') private fileUploadQueue: Queue
     ) { }
 
     async create(createBookAppointmentDto: CreateBookAppointmentDto) {
@@ -52,21 +58,10 @@ export class BookAppointmentService {
                 }
             })
         }
-        if (bookAppointment) {
-            await this.mailService.sendMailToAdminBookAppoiontmentCreated({
-                name, email, phone, dob, bookingDateTime: bookingDate + " " + bookingTime, description,
-                adminName: process.env.ADMIN_NAME,
-                adminEmail: process.env.ADMIN_EMAIL,
-                appName: process.env.APP_NAME
-            })
-            await this.mailService.sendMailToClientBookAppoiontmentCreated({
-                adminName: process.env.ADMIN_NAME,
-                adminEmail: process.env.ADMIN_EMAIL,
-                bookingDateTime: bookAppointment.bookingDateTime,
-                clientName: name,
-                appName: process.env.APP_NAME
-            })
-        }
+        this.eventEmitter.emit('book-appointment.created', {
+            ...bookAppointment
+        })
+
     }
 
     async checkAppointmentAvailability() {
@@ -97,5 +92,13 @@ export class BookAppointmentService {
     makeDate() {
         var now = new Date()
         return new Date(now).toISOString();
+    }
+
+    async uploadFile(file) {
+        await this.fileUploadQueue.add('upload-to-s3', {
+            file
+        })
+        console.log('here i am ');
+
     }
 }

@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { UpdateStatusBookAppointmentDto } from './dto/update-status-book-appointment.dto';
 import { MailService } from 'src/mail/mail.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 const paginate: PaginateFunction = paginator({ perPage: 10 });
 
@@ -13,6 +14,7 @@ const paginate: PaginateFunction = paginator({ perPage: 10 });
 export class BookAppointmentsService {
     constructor(private prisma: PrismaService,
         private mailService: MailService,
+        private eventEmitter: EventEmitter2
     ) { }
 
     create(createBookAppointmentDto: CreateBookAppointmentDto) {
@@ -75,10 +77,15 @@ export class BookAppointmentsService {
             appName: process.env.APP_NAME,
             bookingDateTime: bookAppointment.bookingDateTime
         }
-        if (status == 'Confirmed') {
-            this.mailService.sendMailToClientBookAppoiontmentConfirmed(data)
-        } else {
-            this.mailService.sendMailToClientBookAppoiontmentCanceled(data)
+        switch (status) {
+            case 'Confirmed':
+                this.eventEmitter.emit('book-appointment.status-confirmed', data)
+                break;
+            case 'Canceled':
+                this.mailService.sendMailToClientBookAppoiontmentCanceled(data)
+            // this.eventEmitter.emit('book-appointment.status-canceled', data)
+            default:
+                break;
         }
 
         return bookAppointment

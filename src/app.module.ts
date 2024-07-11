@@ -22,6 +22,11 @@ import { MailService } from './mail/mail.service';
 import { ContactFormSendMailService } from './next/contact-form-send-mail/contact-form-send-mail.service';
 import { ForgotPasswordModule } from './auth/forgot-password/forgot-password.module';
 import { ResetPasswordModule } from './auth/reset-password/reset-password.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bull';
+import { MulterModule } from '@nestjs/platform-express';
+import { FileUploadService } from './services/file-upload-service/file-upload-service.service';
+import { FileUploadProcess } from './next/book-appointment/file-upload.process';
 
 @Module({
     imports: [
@@ -39,6 +44,7 @@ import { ResetPasswordModule } from './auth/reset-password/reset-password.module
         BookAppointmentModule,
         BookAppointmentsModule,
         ContactFormSendMailModule,
+        EventEmitterModule.forRoot({}),
         MailerModule.forRoot({
             transport: {
                 host: process.env.EMAIL_HOST,
@@ -63,6 +69,15 @@ import { ResetPasswordModule } from './auth/reset-password/reset-password.module
         ContactFormSendMailModule,
         ForgotPasswordModule,
         ResetPasswordModule,
+        BullModule.forRoot({
+            redis: {
+                host: 'localhost',
+                port: 6379,
+            },
+        }),
+        MulterModule.register({
+            dest: './upload',
+        })
     ],
     controllers: [AppController],
     providers: [AppService, MailService,
@@ -70,6 +85,8 @@ import { ResetPasswordModule } from './auth/reset-password/reset-password.module
             provide: APP_GUARD,
             useClass: RolesGuard,
         },
+        FileUploadService,
+        FileUploadProcess
     ],
     exports: [MailService]
 })

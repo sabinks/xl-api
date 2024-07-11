@@ -4,10 +4,11 @@ import { BookAppointmentsController } from './book-appointments.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { MailModule } from 'src/mail/mail.module';
 import { MailService } from 'src/mail/mail.service';
+import { BookAppointmentListener } from './listeners/book-appointment.listener';
 
 @Module({
     imports: [PrismaModule],
     controllers: [BookAppointmentsController],
-    providers: [BookAppointmentsService, MailService],
+    providers: [BookAppointmentsService, MailService, BookAppointmentListener],
 })
 export class BookAppointmentsModule { }
