@@ -1,17 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseInterceptors, UploadedFile, ParseFilePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseInterceptors, UploadedFile, ParseFilePipe, HttpStatus, Res, Inject } from '@nestjs/common';
 import { BookAppointmentService } from './book-appointment.service';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import 'multer'
 import { FileSizeValidationPipe } from './file-size-validation-pipe/file-size-validation.pipe';
+import { Response } from 'express';
+import { ClientProxy } from '@nestjs/microservices';
 @Controller('/api/next')
 export class BookAppointmentController {
-    constructor(private readonly bookAppointmentService: BookAppointmentService) { }
+    constructor(private readonly bookAppointmentService: BookAppointmentService,
+    ) { }
 
     @Post('book-appointment')
     @UsePipes(ValidationPipe)
-    create(@Body() createBookAppointmentDto: CreateBookAppointmentDto) {
-        return this.bookAppointmentService.create(createBookAppointmentDto);
+    create(@Body() createBookAppointmentDto: CreateBookAppointmentDto, @Res() res: Response) {
+        this.bookAppointmentService.create(createBookAppointmentDto);
+        return res.status(HttpStatus.OK).json({
+            'message': 'Appointment Book Successfull!'
+        })
     }
 
     @Get('/check-appointment-availablity')
@@ -30,5 +36,9 @@ export class BookAppointmentController {
             status: 200,
             message: 'File Uploaded Successfully'
         }
+    }
+    @Post('test-message')
+    async handleSendMail() {
+        await this.bookAppointmentService.handleSendMail()
     }
 }

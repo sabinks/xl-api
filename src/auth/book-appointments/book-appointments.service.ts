@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { UpdateBookAppointmentDto } from './dto/update-book-appointment.dto';
 import { PaginateFunction, paginator } from 'src/pagination/paginator';
@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import { UpdateStatusBookAppointmentDto } from './dto/update-status-book-appointment.dto';
 import { MailService } from 'src/mail/mail.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ClientProxy } from '@nestjs/microservices';
 
 const paginate: PaginateFunction = paginator({ perPage: 10 });
 
@@ -14,7 +15,8 @@ const paginate: PaginateFunction = paginator({ perPage: 10 });
 export class BookAppointmentsService {
     constructor(private prisma: PrismaService,
         private mailService: MailService,
-        private eventEmitter: EventEmitter2
+        private eventEmitter: EventEmitter2,
+        @Inject('MAIL_SERVICE') private client: ClientProxy
     ) { }
 
     create(createBookAppointmentDto: CreateBookAppointmentDto) {
@@ -79,10 +81,13 @@ export class BookAppointmentsService {
         }
         switch (status) {
             case 'Confirmed':
-                this.eventEmitter.emit('book-appointment.status-confirmed', data)
+                this.client.emit('book-appointment.status-confirmed', data)
+                // this.eventEmitter.emit('book-appointment.status-confirmed', data)
                 break;
-            case 'Canceled':
-                this.mailService.sendMailToClientBookAppoiontmentCanceled(data)
+            case 'Cancelled':
+                this.client.emit('book-appointment.status-canceled', data)
+            // this.eventEmitter.emit('book-appointment.status-canceled', data)
+            // this.mailService.sendMailToClientBookAppoiontmentCanceled(data)
             // this.eventEmitter.emit('book-appointment.status-canceled', data)
             default:
                 break;

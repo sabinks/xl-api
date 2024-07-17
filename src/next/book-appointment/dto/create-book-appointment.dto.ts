@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsLowercase, IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { IsEmail, IsLowercase, IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class CreateBookAppointmentDto {
 
@@ -9,7 +9,6 @@ export class CreateBookAppointmentDto {
 
     @IsNotEmpty()
     @IsString()
-    @MaxLength(255)
     @IsEmail()
     @IsLowercase()
     email: string;

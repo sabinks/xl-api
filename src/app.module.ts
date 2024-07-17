@@ -27,7 +27,7 @@ import { BullModule } from '@nestjs/bull';
 import { MulterModule } from '@nestjs/platform-express';
 import { FileUploadService } from './services/file-upload-service/file-upload-service.service';
 import { FileUploadProcess } from './next/book-appointment/file-upload.process';
-
+import { Transport, MicroserviceOptions, ClientsModule } from '@nestjs/microservices';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -65,7 +65,6 @@ import { FileUploadProcess } from './next/book-appointment/file-upload.process';
                 },
             },
         }),
-        MailModule,
         ContactFormSendMailModule,
         ForgotPasswordModule,
         ResetPasswordModule,
@@ -77,7 +76,8 @@ import { FileUploadProcess } from './next/book-appointment/file-upload.process';
         }),
         MulterModule.register({
             dest: './upload',
-        })
+        }),
+        MailModule,
     ],
     controllers: [AppController],
     providers: [AppService, MailService,

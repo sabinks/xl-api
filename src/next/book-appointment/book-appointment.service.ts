@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -8,13 +8,16 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { log } from 'handlebars';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class BookAppointmentService {
     constructor(private prisma: PrismaService,
         private mailService: MailService,
         private eventEmitter: EventEmitter2,
-        @InjectQueue('fileUpload') private fileUploadQueue: Queue
+        @InjectQueue('fileUpload') private fileUploadQueue: Queue,
+        @Inject('MAIL_SERVICE') private client: ClientProxy,
+
     ) { }
 
     async create(createBookAppointmentDto: CreateBookAppointmentDto) {
@@ -58,9 +61,10 @@ export class BookAppointmentService {
                 }
             })
         }
-        this.eventEmitter.emit('book-appointment.created', {
-            ...bookAppointment
-        })
+        // this.eventEmitter.emit('book-appointment.created', {
+        //     ...bookAppointment
+        // })
+        this.client.emit('book-appointment.created', bookAppointment)
 
     }
 
@@ -99,6 +103,9 @@ export class BookAppointmentService {
             file
         })
         console.log('here i am ');
-
+    }
+    handleSendMail() {
+        this.client.emit('test-message', { name: 'John Doe', age: '19' })
+        console.log('Message sent');
     }
 }
