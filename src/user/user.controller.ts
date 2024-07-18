@@ -18,8 +18,8 @@ export class UserController {
     }
 
     @Get()
-    // @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin')
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     findAll() {
         return this.userService.findAll();
     }

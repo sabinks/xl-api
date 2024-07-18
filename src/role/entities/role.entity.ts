@@ -1,1 +1,3 @@
-export class Role {}
+export class Role {
+    name: string;
+}

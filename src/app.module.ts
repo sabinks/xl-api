@@ -28,6 +28,9 @@ import { MulterModule } from '@nestjs/platform-express';
 import { FileUploadService } from './services/file-upload-service/file-upload-service.service';
 import { FileUploadProcess } from './next/book-appointment/file-upload.process';
 import { Transport, MicroserviceOptions, ClientsModule } from '@nestjs/microservices';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './auth/guards/jwt.guard';
+import { JwtService } from '@nestjs/jwt';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -86,8 +89,9 @@ import { Transport, MicroserviceOptions, ClientsModule } from '@nestjs/microserv
             useClass: RolesGuard,
         },
         FileUploadService,
-        FileUploadProcess
+        FileUploadProcess,
+        JwtService
     ],
-    exports: [MailService]
+    exports: [MailService, JwtService]
 })
 export class AppModule { }

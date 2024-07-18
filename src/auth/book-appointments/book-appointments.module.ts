@@ -6,6 +6,7 @@ import { MailModule } from 'src/mail/mail.module';
 import { MailService } from 'src/mail/mail.service';
 import { BookAppointmentListener } from './listeners/book-appointment.listener';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
     imports: [PrismaModule,
@@ -24,6 +25,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         ]),
     ],
     controllers: [BookAppointmentsController],
-    providers: [BookAppointmentsService, MailService, BookAppointmentListener],
+    providers: [BookAppointmentsService, MailService, BookAppointmentListener, JwtService],
+    exports: [JwtService]
 })
 export class BookAppointmentsModule { }

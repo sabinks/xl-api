@@ -1,20 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, Res, UseGuards } from '@nestjs/common';
 import { BookAppointmentsService } from './book-appointments.service';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { UpdateBookAppointmentDto } from './dto/update-book-appointment.dto';
 import { UpdateStatusBookAppointmentDto } from './dto/update-status-book-appointment.dto';
 import { Response } from 'express';
+import { RolesGuard } from '../guards/role.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('/api/book-appointments')
 export class BookAppointmentsController {
     constructor(private readonly bookAppointmentsService: BookAppointmentsService) { }
 
     @Post()
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     create(@Body() createBookAppointmentDto: CreateBookAppointmentDto) {
         return this.bookAppointmentsService.create(createBookAppointmentDto);
     }
 
     @Get()
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     findAll(
         @Query('perPage') perPage: number,
         @Query('page') page: number,
@@ -25,6 +32,8 @@ export class BookAppointmentsController {
     }
 
     @Get(':id')
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     findOne(@Param('id') id: string, @Res() res: Response) {
         let appointment = this.bookAppointmentsService.findOne(+id);
         if (appointment) {
@@ -36,6 +45,8 @@ export class BookAppointmentsController {
     }
 
     @Patch(':id')
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     update(@Param('id') id: string, @Body() updateBookAppointmentDto: UpdateBookAppointmentDto, @Res() res: Response) {
         this.bookAppointmentsService.update(+id, updateBookAppointmentDto);
         return res.status(HttpStatus.OK).json({
@@ -43,6 +54,8 @@ export class BookAppointmentsController {
         })
     }
     @Post(':id/status')
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     updateStatus(@Param('id') id: string, @Body() updateStatusBookAppointmentDto: UpdateStatusBookAppointmentDto, @Res() res: Response) {
         this.bookAppointmentsService.updateStatus(+id, updateStatusBookAppointmentDto);
         return res.status(HttpStatus.OK).json({
@@ -51,6 +64,8 @@ export class BookAppointmentsController {
     }
 
     @Delete(':id')
+    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @Roles(['superadmin'])
     remove(@Param('id') id: string, @Res() res: Response) {
         this.bookAppointmentsService.remove(+id);
         return res.status(HttpStatus.OK).json({

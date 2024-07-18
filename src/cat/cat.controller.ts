@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, ParseIntPipe, ValidationPipe, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, ParseIntPipe, ValidationPipe, UsePipes, UseFilters, ForbiddenException } from '@nestjs/common';
 import { CatService } from './cat.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 
 @Controller('cat')
 export class CatController {
@@ -10,6 +11,7 @@ export class CatController {
     @Post()
     @UsePipes(ValidationPipe)
     create(@Body() createCatDto: CreateCatDto) {
+        return new ForbiddenException()
         return this.catService.create(createCatDto);
     }
 
