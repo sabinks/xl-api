@@ -18,7 +18,6 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
         if (!roles) {
             return true;
         }
-        console.log('inside role guard');
         const request = context.switchToHttp().getRequest();
         if (request.headers.authorization) {
             const split = request.headers.authorization.split(' ');
@@ -28,7 +27,7 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
         return false
     }
 
-    haveCommon(roles: String[], userRole: string) {
+    haveCommon(roles: string[], userRole: string) {
         return roles.includes(userRole)
     }
 

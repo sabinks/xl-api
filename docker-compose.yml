@@ -56,6 +56,28 @@ services:
   #     UPLOAD_LIMIT: 100M
   #   networks:
   #     - nestjs_network
+  # app:
+  #   image: xl-nestjs-app
+  #   build: .
+  #   ports:
+  #     - '4000:3000'
+  #   environment:
+  #     - NODE_ENV=production
+  #   depends_on:
+  #     - rabbitmq
+  postgres:
+    container_name: xl_nestjs_postgres
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=Pass1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=nest_learn
+    networks:
+      - nestjs_network
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'xl_nestjs_rabbitmq'
@@ -72,6 +94,16 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - nestjs_network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: xl_nestjs_pgadmin
+    restart: always
+    ports:
+      - '8888:80'
+    env_file:
+      - .env
+    volumes:
+      - 'nestjsdbdata:/var/lib/pgadmin'
 networks:
   nestjs_network:
     driver: bridge

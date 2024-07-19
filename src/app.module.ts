@@ -31,12 +31,22 @@ import { Transport, MicroserviceOptions, ClientsModule } from '@nestjs/microserv
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { AuthClientsModule } from './auth/clients/clients.module';
+import { UserProfileModule } from './auth/user-profile/user-profile.module';
+import { ClientNotesModule } from './auth/client-notes/client-notes.module';
 @Module({
     imports: [
         ConfigModule.forRoot({
             envFilePath: ['.env'],
-            isGlobal: true
+            isGlobal: true,
         }),
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 100,
+        }]),
         CatModule,
         LoginModule,
         RegisterModule,
@@ -81,6 +91,10 @@ import { JwtService } from '@nestjs/jwt';
             dest: './upload',
         }),
         MailModule,
+        ClientsModule,
+        AuthClientsModule,
+        UserProfileModule,
+        ClientNotesModule
     ],
     controllers: [AppController],
     providers: [AppService, MailService,
@@ -88,6 +102,11 @@ import { JwtService } from '@nestjs/jwt';
             provide: APP_GUARD,
             useClass: RolesGuard,
         },
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard
+        },
+
         FileUploadService,
         FileUploadProcess,
         JwtService

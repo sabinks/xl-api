@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseInterceptors, UploadedFile, ParseFilePipe, HttpStatus, Res, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseInterceptors, UploadedFile, ParseFilePipe, HttpStatus, Res, Inject, UseGuards } from '@nestjs/common';
 import { BookAppointmentService } from './book-appointment.service';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
@@ -6,12 +6,15 @@ import 'multer'
 import { FileSizeValidationPipe } from './file-size-validation-pipe/file-size-validation.pipe';
 import { Response } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 @Controller('/api/next')
 export class BookAppointmentController {
     constructor(private readonly bookAppointmentService: BookAppointmentService,
     ) { }
 
     @Post('book-appointment')
+    @UseGuards(ThrottlerGuard)
+    @Throttle({ default: { ttl: 60000, limit: 100 } })
     @UsePipes(ValidationPipe)
     create(@Body() createBookAppointmentDto: CreateBookAppointmentDto, @Res() res: Response) {
         this.bookAppointmentService.create(createBookAppointmentDto);

@@ -28,7 +28,8 @@ export class BookAppointmentsController {
         @Query('order') order: string,
         @Query('orderBy') orderBy: string,
         @Query('search') search: string) {
-        return this.bookAppointmentsService.findAll({ where: {}, orderBy: { [orderBy]: order }, perPage, page });
+        return this.bookAppointmentsService
+            .findAll({ where: {}, orderBy: { [orderBy]: order }, perPage, page });
     }
 
     @Get(':id')
