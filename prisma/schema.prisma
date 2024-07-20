@@ -34,6 +34,7 @@ model User {
     userRole          UserRole[]
     createdAt         String         @default("")
     updatedAt         String         @default("")
+    customerId        String?
 }
 
 model Role {

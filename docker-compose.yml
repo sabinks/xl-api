@@ -94,16 +94,16 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - nestjs_network
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: xl_nestjs_pgadmin
-    restart: always
-    ports:
-      - '8888:80'
-    env_file:
-      - .env
-    volumes:
-      - 'nestjsdbdata:/var/lib/pgadmin'
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: xl_nestjs_pgadmin
+  #   restart: always
+  #   ports:
+  #     - '8888:80'
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - 'nestjsdbdata:/var/lib/pgadmin'
 networks:
   nestjs_network:
     driver: bridge

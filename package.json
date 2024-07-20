@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/bull": "^10.1.1",
     "@nestjs/bullmq": "^10.1.1",
     "@nestjs/common": "^10.0.0",
@@ -41,6 +42,7 @@
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.4",
     "aws-sdk": "^2.1658.0",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "bull": "^4.15.1",
     "bullmq": "^5.8.6",
@@ -54,7 +56,8 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "stripe": "^16.2.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

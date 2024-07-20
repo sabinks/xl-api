@@ -9,6 +9,7 @@ import { log } from 'handlebars';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ClientProxy } from '@nestjs/microservices';
+import Stripe from 'stripe';
 
 @Injectable()
 export class BookAppointmentService {
@@ -17,6 +18,7 @@ export class BookAppointmentService {
         private eventEmitter: EventEmitter2,
         @InjectQueue('fileUpload') private fileUploadQueue: Queue,
         @Inject('MAIL_SERVICE') private client: ClientProxy,
+        @Inject('STRIPE_CLIENT') private stripe: Stripe
 
     ) { }
 
@@ -39,11 +41,12 @@ export class BookAppointmentService {
                     updatedAt: this.makeDate(),
                 }
             })
-
+            const { customerId } = userExists
+            await this.createStripeCustomerUpdateUserModel(name, email, customerId)
         } else {
             let randomPassword = this.makeRandomString()
             const hashPassword = await bcrypt.hash(randomPassword, 12);
-            let data = await this.prisma.user.create({
+            let user = await this.prisma.user.create({
                 data: {
                     username: name, displayName: name, email, password: hashPassword, active: false,
                     data: JSON.stringify({}),
@@ -53,13 +56,15 @@ export class BookAppointmentService {
             })
             bookAppointment = await this.prisma.bookAppointment.create({
                 data: {
-                    userId: data.id,
+                    userId: user.id,
                     name, email, phone, dob, bookingDateTime: bookingDate + " " + bookingTime, description,
                     status: 'tentative',
                     createdAt: this.makeDate(),
                     updatedAt: this.makeDate(),
                 }
             })
+            const { customerId } = user
+            await this.createStripeCustomerUpdateUserModel(name, email, customerId)
         }
         // this.eventEmitter.emit('book-appointment.created', {
         //     ...bookAppointment
@@ -67,7 +72,21 @@ export class BookAppointmentService {
         this.client.emit('book-appointment.created', bookAppointment)
 
     }
-
+    async createStripeCustomerUpdateUserModel(name, email, customerId) {
+        if (!customerId) {
+            let customer = await this.stripe.customers.create({
+                name, email
+            })
+            let data = await this.prisma.user.update({
+                where: {
+                    email
+                },
+                data: {
+                    customerId: customer.id
+                }
+            })
+        }
+    }
     async checkAppointmentAvailability() {
         let appointments = await this.prisma.bookAppointment.findMany({
             where: {

@@ -37,12 +37,14 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthClientsModule } from './auth/clients/clients.module';
 import { UserProfileModule } from './auth/user-profile/user-profile.module';
 import { ClientNotesModule } from './auth/client-notes/client-notes.module';
+import { StripeModule } from './stripe/stripe.module';
 @Module({
     imports: [
         ConfigModule.forRoot({
             envFilePath: ['.env'],
             isGlobal: true,
         }),
+        StripeModule.forRoot(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' }),
         ThrottlerModule.forRoot([{
             ttl: 60000,
             limit: 100,
@@ -94,7 +96,8 @@ import { ClientNotesModule } from './auth/client-notes/client-notes.module';
         ClientsModule,
         AuthClientsModule,
         UserProfileModule,
-        ClientNotesModule
+        ClientNotesModule,
+        StripeModule
     ],
     controllers: [AppController],
     providers: [AppService, MailService,
