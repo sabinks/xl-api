@@ -8,9 +8,11 @@ import { FileUploadProcess } from './file-upload.process';
 import { ClientProxy, ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-    imports: [PrismaModule, BullModule.registerQueue({
-        name: 'fileUpload'
-    }),
+    imports: [
+        PrismaModule,
+        BullModule.registerQueue({
+            name: 'fileUpload'
+        }),
         ClientsModule.register([
             {
                 name: 'MAIL_SERVICE',

@@ -1,7 +1,14 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import Stripe from 'stripe';
+import { StripeController } from './stripe.controller';
+import { StripeService } from './stripe.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
-@Module({})
+@Module({
+    imports: [StripeModule, PrismaModule],
+    controllers: [StripeController],
+    providers: [StripeService]
+})
 export class StripeModule {
     static forRoot(apiKey: string, config: Stripe.StripeConfig): DynamicModule {
         const stripe = new Stripe(apiKey, config)

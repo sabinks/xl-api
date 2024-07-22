@@ -73,4 +73,9 @@ export class BookAppointmentsController {
             'message': 'Appointment Deleted!'
         })
     }
+
+    @Post('/send-payment/:id')
+    async sendPaymentForBookAppointment(@Param('id') id: string) {
+        this.bookAppointmentsService.sendPaymentForBookAppointment(+id)
+    }
 }

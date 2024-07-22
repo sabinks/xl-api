@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { UpdateBookAppointmentDto } from './dto/update-book-appointment.dto';
 import { PaginateFunction, paginator } from 'src/pagination/paginator';
@@ -8,6 +8,7 @@ import { UpdateStatusBookAppointmentDto } from './dto/update-status-book-appoint
 import { MailService } from 'src/mail/mail.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
+import Stripe from 'stripe';
 
 const paginate: PaginateFunction = paginator({ perPage: 10 });
 
@@ -16,7 +17,8 @@ export class BookAppointmentsService {
     constructor(private prisma: PrismaService,
         private mailService: MailService,
         private eventEmitter: EventEmitter2,
-        @Inject('MAIL_SERVICE') private client: ClientProxy
+        @Inject('MAIL_SERVICE') private client: ClientProxy,
+        @Inject('STRIPE_CLIENT') private stripe: Stripe
     ) { }
 
     create(createBookAppointmentDto: CreateBookAppointmentDto) {
@@ -101,6 +103,50 @@ export class BookAppointmentsService {
             where: {
                 id
             }
+        })
+    }
+
+    async sendPaymentForBookAppointment(id: number) {
+        let bookAppointment = await this.prisma.bookAppointment.findFirst({
+            where: {
+                id
+            },
+        })
+        if (!bookAppointment) {
+            throw new NotFoundException('Book appointment not found!')
+        }
+        let clientId = (await bookAppointment).userId
+        let client = await this.prisma.user.findFirst({
+            where: {
+                id: clientId
+            }
+        })
+        if (!client) {
+            throw new NotFoundException('Client information not found!')
+        }
+        let customer
+        if (client && !client?.customerId) {
+            customer = await this.stripe.customers.create({
+                name: client.username,
+                email: client.email
+            })
+            await this.prisma.user.update({
+                where: {
+                    id: client.id
+                },
+                data: {
+                    customerId: customer.id
+                }
+            })
+        }
+
+        this.client.emit('book-appointment-payment', {
+            customerId: client?.customerId ? client.customerId : customer.id,
+            name: client.username,
+            email: client.email,
+            amount: 20,
+            currency: process.env.STRIPE_CURRENCY,
+            appName: process.env.APP_NAME
         })
     }
 }
