@@ -79,6 +79,8 @@ model BookAppointment {
     bookingDateTime String @default("")
     description     String @default("")
     status          String @default("Tentative")
+    paymentId       String @default("")
+    paymentStatus   String @default("Pending")
     createdAt       String @default("")
     updatedAt       String @default("")
 }

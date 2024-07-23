@@ -139,14 +139,15 @@ export class BookAppointmentsService {
                 }
             })
         }
-
+        let customerId = client?.customerId ? client.customerId : customer.id
         this.client.emit('book-appointment-payment', {
-            customerId: client?.customerId ? client.customerId : customer.id,
+            customerId: customerId,
             name: client.username,
             email: client.email,
             amount: 20,
             currency: process.env.STRIPE_CURRENCY,
-            appName: process.env.APP_NAME
+            appName: process.env.APP_NAME,
+            paymentUrl: `${process.env.FRONTEND_URL}/payment?refId=${bookAppointment.id}&cusId=${customerId}&amt=${20}&cur=${process.env.STRIPE_CURRENCY}`
         })
     }
 }
