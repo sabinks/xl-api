@@ -5,6 +5,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 import { RolesGuard } from '../guards/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/decorators/roles.decorator';
+import { ActiveStatusClientDto } from './dto/active-status-client.dto';
 
 @Controller('api/clients')
 export class ClientsController {
@@ -26,7 +27,27 @@ export class ClientsController {
         @Query('search') search: string
     ) {
         return this.clientsService
-            .findAll({ where: {}, orderBy: { [orderBy]: order }, perPage, page });
+            .findAll({
+                where: {}, select: {
+                    id: true,
+                    username: true,
+                    displayName: true,
+                    email: true,
+                    dob: true,
+                    phone: true,
+                    emailVerifiedAt: false,
+                    verificationToken: false,
+                    profileImage: false,
+                    profileImagePath: true,
+                    selfSignup: false,
+                    data: true,
+                    password: false,
+                    active: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    customerId: true
+                }, orderBy: { [orderBy]: order }, perPage, page
+            });
     }
 
     @Get(':id')
@@ -39,6 +60,10 @@ export class ClientsController {
         return this.clientsService.update(+id, updateClientDto);
     }
 
+    @Post('/:id/active-status')
+    activeStatusChange(@Param('id') id: string, @Body() activeStatusClient: ActiveStatusClientDto) {
+        return this.clientsService.activeStatusChange(+id, activeStatusClient);
+    }
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.clientsService.remove(+id);

@@ -1,0 +1,42 @@
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+NODE_ENV=development
+APP_NAME="XL Accounting"
+DATABASE_URL="postgresql://postgres:Pass1234@localhost:5432/nest_learn?schema=public"
+AUTH_SECRET="thissecretshouldbelongcomplexstring"
+SALT_ROUND=12
+PORT= 4000
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT = 587
+EMAIL_USERNAME=
+EMAIL_PASSWORD=
+ADMIN_EMAIL="admin@mail.com"
+ADMIN_NAME="XL Admin"
+NO_REPLY="no-relpy@mail.com"
+FRONTEND_URL="http://localhost:3000"
+BACKEND_URL="http://localhost:4000"
+
+AWS_BUCKET_REGION="us-east-1"
+AWS_ACCESS_KEY=
+AWS_SECRET_KEY=
+PGDATA=/var/lib/postgresql/data/pgdata
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=Pass1234
+POSTGRES_DB=nest_learn
+POSTGRES_HOST=localhost
+# pgAdmin
+PGADMIN_DEFAULT_EMAIL=postgres@mail.com
+PGADMIN_DEFAULT_PASSWORD=Pass1234
+# DB_CONNECTION=mysql
+# DB_HOST=see_mysql
+# DB_PORT=3306
+# DB_DATABASE=nest_learn
+# DB_USERNAME=user
+# DB_PASSWORD=pass1234
+STRIPE_CURRENCY=aud
+STRIPE_PUB_KEY=
+STRIPE_SECRET_KEY=

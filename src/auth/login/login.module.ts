@@ -12,7 +12,7 @@ import { JwtStrategy } from '../strategies/jwt.strategy';
         PassportModule,
         JwtModule.register({
             secret: process.env.AUTH_SECRET,
-            signOptions: { expiresIn: "10h" }
+            signOptions: { expiresIn: "240h" }
         }),
         PrismaModule],
     controllers: [LoginController],

@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundExcep
 import { CatService } from './cat.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
-import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 
 @Controller('cat')
 export class CatController {

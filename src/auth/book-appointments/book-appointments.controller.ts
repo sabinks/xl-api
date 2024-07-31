@@ -20,7 +20,8 @@ export class BookAppointmentsController {
     }
 
     @Get()
-    @UseGuards(RolesGuard, AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(RolesGuard)
     @Roles(['superadmin'])
     findAll(
         @Query('perPage') perPage: number,

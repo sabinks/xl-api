@@ -30,6 +30,4 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
     haveCommon(roles: string[], userRole: string) {
         return roles.includes(userRole)
     }
-
-
 }

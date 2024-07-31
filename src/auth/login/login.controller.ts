@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Req, Res, UseGuards, Request } from '@nestjs/common';
 import { LocalGuard } from '../guards/local.guard';
 import { JwtAuthGuard } from '../guards/jwt.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/auth')
 export class LoginController {
@@ -12,7 +13,7 @@ export class LoginController {
         return req.user;
     }
     @Post('get-user')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async getUser(@Request() req) {
 
         const { displayName, email, active, id, } = req.user

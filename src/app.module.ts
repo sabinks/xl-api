@@ -38,6 +38,8 @@ import { AuthClientsModule } from './auth/clients/clients.module';
 import { UserProfileModule } from './auth/user-profile/user-profile.module';
 import { ClientNotesModule } from './auth/client-notes/client-notes.module';
 import { StripeModule } from './stripe/stripe.module';
+import { MathController } from './math/math.controller';
+import { MathService } from './math/math.service';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -97,9 +99,9 @@ import { StripeModule } from './stripe/stripe.module';
         AuthClientsModule,
         UserProfileModule,
         ClientNotesModule,
-        StripeModule
+        StripeModule,
     ],
-    controllers: [AppController],
+    controllers: [AppController, MathController],
     providers: [AppService, MailService,
         {
             provide: APP_GUARD,
@@ -112,7 +114,8 @@ import { StripeModule } from './stripe/stripe.module';
 
         FileUploadService,
         FileUploadProcess,
-        JwtService
+        JwtService,
+        MathService
     ],
     exports: [MailService, JwtService]
 })

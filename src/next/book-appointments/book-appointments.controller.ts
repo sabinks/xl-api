@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseInterceptors, UploadedFile, ParseFilePipe, HttpStatus, Res, Inject, UseGuards } from '@nestjs/common';
-import { BookAppointmentService } from './book-appointment.service';
+import { BookAppointmentsService } from './book-appointments.service';
 import { CreateBookAppointmentDto } from './dto/create-book-appointment.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import 'multer'
@@ -7,9 +7,9 @@ import { FileSizeValidationPipe } from './file-size-validation-pipe/file-size-va
 import { Response } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-@Controller('/api/next/end/')
-export class BookAppointmentController {
-    constructor(private readonly bookAppointmentService: BookAppointmentService,
+@Controller('/api/next')
+export class BookAppointmentsController {
+    constructor(private readonly bookAppointmentService: BookAppointmentsService,
     ) { }
 
     @Post('book-appointment')
