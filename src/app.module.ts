@@ -30,7 +30,7 @@ import { FileUploadProcess } from './next/book-appointment/file-upload.process';
 import { Transport, MicroserviceOptions, ClientsModule } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -40,8 +40,16 @@ import { ClientNotesModule } from './auth/client-notes/client-notes.module';
 import { StripeModule } from './stripe/stripe.module';
 import { MathController } from './math/math.controller';
 import { MathService } from './math/math.service';
+import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { LoginService } from './auth/login/login.service';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { LoginController } from './auth/login/login.controller';
 @Module({
     imports: [
+        JwtModule.register({
+            secret: process.env.AUTH_SECRET,
+            signOptions: { expiresIn: "240h" }
+        }),
         ConfigModule.forRoot({
             envFilePath: ['.env'],
             isGlobal: true,
@@ -100,8 +108,9 @@ import { MathService } from './math/math.service';
         UserProfileModule,
         ClientNotesModule,
         StripeModule,
+        LoginModule
     ],
-    controllers: [AppController, MathController],
+    controllers: [AppController, MathController, LoginController],
     providers: [AppService, MailService,
         {
             provide: APP_GUARD,
@@ -111,12 +120,14 @@ import { MathService } from './math/math.service';
             provide: APP_GUARD,
             useClass: ThrottlerGuard
         },
-
+        LoginService,
         FileUploadService,
         FileUploadProcess,
         JwtService,
-        MathService
+        MathService,
+        JwtStrategy,
+        GoogleStrategy
     ],
-    exports: [MailService, JwtService]
+    exports: [MailService, JwtService, LoginService]
 })
 export class AppModule { }
