@@ -7,4 +7,4 @@
 - npx prisma migrate dev
 - npx prisma seed
 - npx prisma studio
-- 
+  
