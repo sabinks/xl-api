@@ -18,7 +18,7 @@ import { ClientProxy, ClientsModule, Transport } from '@nestjs/microservices';
                 name: 'MAIL_SERVICE',
                 transport: Transport.RMQ,
                 options: {
-                    urls: ['amqp://localhost:5672'],
+                    urls: ['amqp://guest:guest@xl_nestjs_rabbitmq:5672'],
                     queue: 'mail_queue',
                     queueOptions: {
                         durable: false

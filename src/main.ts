@@ -25,6 +25,13 @@ async function bootstrap() {
     );
     app.connectMicroservice({
         transport: Transport.RMQ,
+        options: {
+            urls: ['amqp://guest:guest@xl_nestjs_rabbitmq:5672'],
+            queue: 'mail_queue',
+            queueOptions: {
+                durable: false
+            },
+        }
     })
     let port = process.env.PORT || 3000;
     await app.startAllMicroservices()

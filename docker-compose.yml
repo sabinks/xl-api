@@ -1,5 +1,36 @@
 version: '3'
 services:
+  nestjs_app1:
+    build:
+      context: .
+      dockerfile: Dockerfile1
+    container_name: nestjs_app1
+    # restart: on-failure
+    ports:
+      - 3061:3000
+    environment:
+      - SERVER_NAME="Server A"
+      - RBMQ_URL= 'xl_nestjs_rabbitmq'
+    networks:
+      - nestjs_network
+    depends_on:
+      - xl_nestjs_rabbitmq
+      - postgres
+  nestjs_app2:
+    build:
+      context: .
+      dockerfile: Dockerfile2
+    container_name: nestjs_app2
+    ports:
+      - 3062:3000
+    environment:
+      - SERVER_NAME="Server B"
+      - RBMQ_URL= 'xl_nestjs_rabbitmq'
+    networks:
+      - nestjs_network
+    depends_on:
+      - xl_nestjs_rabbitmq
+      - postgres
   # nestjs_app:
   #   build:
   #     context: .
@@ -76,9 +107,12 @@ services:
       - POSTGRES_PASSWORD=Pass1234
       - POSTGRES_USER=postgres
       - POSTGRES_DB=nest_learn
+    depends_on:
+      - xl_nestjs_rabbitmq
     networks:
       - nestjs_network
-  rabbitmq:
+
+  xl_nestjs_rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'xl_nestjs_rabbitmq'
     environment:
