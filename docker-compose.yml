@@ -16,21 +16,21 @@ services:
     depends_on:
       - xl_nestjs_rabbitmq
       - postgres
-  # nestjs_app2:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile2
-  #   container_name: nestjs_app2
-  #   ports:
-  #     - 3062:3000
-  #   environment:
-  #     - SERVER_NAME="Server B"
-  #     - RBMQ_URL= 'xl_nestjs_rabbitmq'
-  #   networks:
-  #     - nestjs_network
-  #   depends_on:
-  #     - xl_nestjs_rabbitmq
-  #     - postgres
+  nestjs_app2:
+    build:
+      context: .
+      dockerfile: Dockerfile2
+    container_name: nestjs_app2
+    ports:
+      - 3062:3000
+    environment:
+      - SERVER_NAME="Server B"
+      - RBMQ_URL= 'xl_nestjs_rabbitmq'
+    networks:
+      - nestjs_network
+    depends_on:
+      - xl_nestjs_rabbitmq
+      - postgres
   # nestjs_app:
   #   build:
   #     context: .
