@@ -1,21 +1,21 @@
 version: '3'
 services:
-  # nestjs_app1:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile1
-  #   container_name: nestjs_app1
-  #   # restart: on-failure
-  #   ports:
-  #     - 3061:3000
-  #   environment:
-  #     - SERVER_NAME="Server A"
-  #     - RBMQ_URL= 'xl_nestjs_rabbitmq'
-  #   networks:
-  #     - nestjs_network
-  #   depends_on:
-  #     - xl_nestjs_rabbitmq
-  #     - postgres
+  nestjs_app1:
+    build:
+      context: .
+      dockerfile: Dockerfile1
+    container_name: nestjs_app1
+    # restart: on-failure
+    ports:
+      - 3061:3000
+    environment:
+      - SERVER_NAME="Server A"
+      - RBMQ_URL= 'xl_nestjs_rabbitmq'
+    networks:
+      - nestjs_network
+    depends_on:
+      - xl_nestjs_rabbitmq
+      - postgres
   # nestjs_app2:
   #   build:
   #     context: .
