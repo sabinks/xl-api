@@ -9,7 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
 
-    constructor(private reflector: Reflector, private jwt: JwtService) {
+    constructor(
+        private reflector: Reflector,
+        private jwt: JwtService) {
         super()
     }
     canActivate(context: ExecutionContext): boolean {

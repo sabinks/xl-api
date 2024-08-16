@@ -46,13 +46,14 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { LoginController } from './auth/login/login.controller';
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            envFilePath: [`.env.${process.env.NODE_ENV}`],
+            isGlobal: true,
+        }),
         JwtModule.register({
+            global: true,
             secret: process.env.AUTH_SECRET,
             signOptions: { expiresIn: "240h" }
-        }),
-        ConfigModule.forRoot({
-            envFilePath: ['.env'],
-            isGlobal: true,
         }),
         StripeModule.forRoot(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' }),
         ThrottlerModule.forRoot([{
@@ -108,7 +109,6 @@ import { LoginController } from './auth/login/login.controller';
         UserProfileModule,
         ClientNotesModule,
         StripeModule,
-        LoginModule
     ],
     controllers: [AppController, MathController, LoginController],
     providers: [AppService, MailService,
@@ -124,8 +124,8 @@ import { LoginController } from './auth/login/login.controller';
         FileUploadService,
         FileUploadProcess,
         JwtService,
-        MathService,
         JwtStrategy,
+        MathService,
         GoogleStrategy
     ],
     exports: [MailService, JwtService, LoginService]

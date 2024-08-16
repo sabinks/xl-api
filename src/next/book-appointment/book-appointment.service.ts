@@ -69,7 +69,9 @@ export class BookAppointmentService {
         // this.eventEmitter.emit('book-appointment.created', {
         //     ...bookAppointment
         // })
-        this.client.emit('book-appointment.created', bookAppointment)
+        let data = await this.client.emit('book-appointment.created', bookAppointment)
+        console.log(data);
+
 
     }
     async createStripeCustomerUpdateUserModel(name, email, customerId) {

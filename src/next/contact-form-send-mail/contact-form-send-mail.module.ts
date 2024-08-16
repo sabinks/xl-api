@@ -13,7 +13,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
                 name: 'MAIL_SERVICE',
                 transport: Transport.RMQ,
                 options: {
-                    urls: ['amqp://guest:guest@xl_nestjs_rabbitmq:5672'],
+                    urls: [process.env.NODE_ENV == 'development' ? 'amqp://localhost:5672' : `${process.env.RBMQ_URL}`],
                     queue: 'mail_queue',
                     queueOptions: {
                         durable: false
